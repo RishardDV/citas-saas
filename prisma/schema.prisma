@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Rol {
+  DUENO
+  ADMIN
+  CLIENTE
+}
+
+model Usuario {
+  id             Int      @id @default(autoincrement())
+  nombre         String
+  email          String   @unique
+  password       String
+  rol            Rol      @default(DUENO)
+  perfil         Perfil?
+  negocios       Negocio[]
+  citasReservadas Cita[]   @relation(name: "ClienteCitas")
+}
+
+model Perfil {
+  id        Int     @id @default(autoincrement())
+  telefono  String?
+  bio       String?
+  avatarUrl String?
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+model Negocio {
+  id            Int            @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  telefono      String?
+  direccion     String?
+  duenoId       Int
+  dueno         Usuario        @relation(fields: [duenoId], references: [id])
+  configuracion Configuracion?
+  suscripcion   Suscripcion?
+  servicios     Servicio[]
+  profesionales Profesional[]
+  citas         Cita[]
+}
+
+model Servicio {
+  id                  Int                  @id @default(autoincrement())
+  nombre              String
+  duracionMin        Int
+  precio              Decimal              @db.Decimal(10, 2)
+  negocioId           Int
+  negocio             Negocio              @relation(fields: [negocioId], references: [id])
+  servicioProfesional ServicioProfesional[]
+  citas               Cita[]
+}
+
+model Profesional {
+  id                  Int                  @id @default(autoincrement())
+  nombre              String
+  especialidad        String?
+  negocioId           Int
+  negocio             Negocio              @relation(fields: [negocioId], references: [id])
+  servicioProfesional ServicioProfesional[]
+  citas              Cita[]
+}
+
+model ServicioProfesional {
+  servicioId    Int
+  profesionalId Int
+  servicio      Servicio    @relation(fields: [servicioId], references: [id])
+  profesional   Profesional @relation(fields: [profesionalId], references: [id])
+
+  @@id([servicioId, profesionalId])
+  @@map("servicio_profesional")
+}
+
+enum EstadoCita {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+model Cita {
+  id            Int        @id @default(autoincrement())
+  fecha         DateTime
+  notas         String?
+  estado        EstadoCita @default(PENDIENTE)
+  negocioId     Int
+  clienteId     Int
+  servicioId    Int
+  profesionalId Int
+  negocio       Negocio    @relation(fields: [negocioId], references: [id])
+  cliente       Usuario     @relation(name: "ClienteCitas", fields: [clienteId], references: [id])
+  servicio      Servicio    @relation(fields: [servicioId], references: [id])
+  profesional   Profesional @relation(fields: [profesionalId], references: [id])
+}
+
+model Configuracion {
+  id        Int     @id @default(autoincrement())
+  negocioId Int     @unique
+  negocio   Negocio @relation(fields: [negocioId], references: [id])
+}
+
+model Suscripcion {
+  id        Int     @id @default(autoincrement())
+  negocioId Int     @unique
+  negocio   Negocio @relation(fields: [negocioId], references: [id])
+}
