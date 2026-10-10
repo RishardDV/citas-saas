@@ -74,6 +74,8 @@ const state = {
   agendaDia: null,
 };
 
+const API_BASE_URL = window.API_BASE_URL.replace(/\/+$/, '');
+
 class ApiError extends Error {
   constructor(message, status, body) {
     super(message);
@@ -90,7 +92,7 @@ async function api(method, path, body) {
   const t0 = performance.now();
   let res;
   try {
-    res = await fetch(path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    res = await fetch(`${API_BASE_URL}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   } catch (e) {
     registrar({ method, path, body, status: 0, ms: performance.now() - t0, data: String(e) });
     throw new ApiError('No se pudo conectar con la API. ¿Está corriendo el servidor?', 0);
