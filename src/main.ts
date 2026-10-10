@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { config as loadEnv } from 'dotenv';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -11,9 +12,14 @@ loadEnv({ path: path.resolve(process.cwd(), '.env') });
 loadEnv({ path: path.resolve(process.cwd(), 'src', '.env') });
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
-  app.use(helmet());
+  // upgradeInsecureRequests desactivado: en http://localhost rompería la carga del panel
+  app.use(
+    helmet({
+      contentSecurityPolicy: { directives: { upgradeInsecureRequests: null } },
+    }),
+  );
   app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
@@ -28,6 +34,9 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+
+  // Panel de pruebas (HTML/JS plano) en http://localhost:3000/app
+  (app as NestExpressApplication).useStaticAssets(path.join(process.cwd(), 'frontend'), { prefix: '/app/' });
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port, '0.0.0.0');

@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
+import { SuscripcionesService } from './suscripciones.service';
+import { SuscripcionesController } from './suscripciones.controller';
+import { StripeWebhookController } from './stripe-webhook.controller';
 
-// Dominio: monetización. Plan FREE vs PRO por negocio.
-// Se implementa en la Clase 3 (Stripe API, webhooks, gating por plan).
-@Module({})
+@Module({
+  controllers: [SuscripcionesController, StripeWebhookController],
+  providers: [SuscripcionesService],
+  exports: [SuscripcionesService],
+})
 export class SuscripcionesModule {}

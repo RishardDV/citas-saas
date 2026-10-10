@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgendaFácil · Panel de pruebas</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/negocios">
+      <span class="logo" aria-hidden="true">AF</span>
+      <span class="brand-text">AgendaFácil <small>panel de pruebas</small></span>
+    </a>
+    <div class="topbar-right">
+      <button id="btn-log" class="btn ghost" type="button" aria-controls="log" aria-expanded="false">
+        <span class="btn-log-label">Consola API</span><span class="btn-log-short" aria-hidden="true">API</span> <span id="log-count" class="count">0</span>
+      </button>
+      <div id="user-chip" class="user-chip" hidden></div>
+      <button id="btn-logout" class="btn ghost" type="button" hidden>Salir</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav id="nav" class="nav" hidden aria-label="Secciones">
+      <a href="#/negocios" data-nav="negocios">Mis negocios</a>
+      <a href="#/reservar" data-nav="reservar">Reservar</a>
+      <a href="#/mis-citas" data-nav="mis-citas">Mis citas</a>
+      <a href="#/perfil" data-nav="perfil">Mi perfil</a>
+      <p class="nav-foot">API: <a href="/docs" target="_blank" rel="noopener">Swagger ↗</a></p>
+    </nav>
+
+    <main id="main"></main>
+
+    <aside id="log" class="log" hidden aria-label="Consola de la API">
+      <div class="log-head">
+        <strong>Consola de la API</strong>
+        <div>
+          <button id="log-clear" class="btn ghost sm" type="button">Limpiar</button>
+          <button id="log-close" class="btn ghost sm" type="button" aria-label="Cerrar consola">✕</button>
+        </div>
+      </div>
+      <p class="log-hint">Cada petición que hace el panel. Haz clic en una para ver lo que se envió y lo que respondió la API.</p>
+      <div id="log-list" class="log-list"></div>
+    </aside>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+</body>
+</html>

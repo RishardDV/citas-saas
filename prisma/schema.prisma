@@ -106,8 +106,24 @@ model Configuracion {
   negocio   Negocio @relation(fields: [negocioId], references: [id])
 }
 
+enum Plan {
+  FREE
+  PRO
+}
+
+enum EstadoSuscripcion {
+  ACTIVA
+  CANCELADA
+  VENCIDA
+}
+
 model Suscripcion {
-  id        Int     @id @default(autoincrement())
-  negocioId Int     @unique
-  negocio   Negocio @relation(fields: [negocioId], references: [id])
+  id                   Int               @id @default(autoincrement())
+  plan                 Plan              @default(FREE)
+  estado               EstadoSuscripcion @default(ACTIVA)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  vigenteHasta         DateTime?
+  negocioId            Int               @unique
+  negocio              Negocio           @relation(fields: [negocioId], references: [id])
 }

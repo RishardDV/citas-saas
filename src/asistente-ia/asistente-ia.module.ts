@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
+import { AsistenteIaService } from './asistente-ia.service';
+import { AsistenteIaController } from './asistente-ia.controller';
+import { PlanProGuard } from './plan-pro.guard';
 
-// Dominio: funcionalidades inteligentes (responder consultas de clientes sobre
-// disponibilidad y redactar recordatorios). Función PRO.
-// Se implementa en la Clase 3 (OpenAI API / Claude API).
-@Module({})
-export class AsistenteIaModule {}   
+@Module({
+  controllers: [AsistenteIaController],
+  providers: [AsistenteIaService, PlanProGuard],
+})
+export class AsistenteIaModule {}
